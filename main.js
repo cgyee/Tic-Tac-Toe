@@ -28,7 +28,7 @@ const GameBoard = (() => {
     });
 
     //Add Players to GameBoard
-    let addPlayer = (player) => {
+    const addPlayer = (player) => {
         if(!currentPlayer && !prevPlayer) {
             currentPlayer = player;
         }
@@ -37,22 +37,49 @@ const GameBoard = (() => {
         }
     };
 
-
     //Function to Add token/Player to myGameBoard
-
+    const addPlayerToken = (i, j) => {
         //Check if Player selection in myGameBoard is available at the specified index 
-        //if true
+        if(!(myGameBoard[i][j])) {
+            //if true
             //Add player/token to that index
-            //CheckforWinner
-            //Alternate Player
+            myGameBoard[i][j] = currentPlayer.getToken;
+            return checkForWinner();
+        }
+    }
+
 
     //checkForWinner -  function travers the array horizontally vertically and diagonally to see if 3 of the same tokens appear
-        //if true return true else false
+    const checkForWinner = () => {
+        //check horizontal and vertical
+        for(i = 0; i < 3; i++) {
+            if(myGameBoard[i][0] && myGameBoard[i][1] && myGameBoard[i][2]) { return true;}
+            else if(myGameBoard[0][i] && myGameBoard[1][i] && myGameBoard[2][i]) { return true;}
+        }
+
+        //check the diagonal
+        if((myGameBoard[0][0] && myGameBoard[1][1] && myGameBoard[2][2]) ||
+            (myGameBoard[2][0] && myGameBoard[1][1] && myGameBoard[0][2])) {
+                return true;
+        }
+        alternatePlayer();
+        return false;
+
+    };
 
     //getCurrentPlayer- function to return the current player
+    const getCurrentPlayer = () => {
+        return currentPlayer;
+    }
 
     //alternate player - function set current player to prev and prev player to current
+    const alternatePlayer = () => {
+        let temp = currentPlayer;
+        currentPlayer = prevPlayer;
+        prevPlayer = temp;
+    }
     //return addPlayerToken function
+    return { addPlayer,addPlayerToken, getCurrentPlayer };
 })();
 
 //Displays and Updates the front end UI as the user interacts with ir
