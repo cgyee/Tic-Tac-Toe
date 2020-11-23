@@ -15,25 +15,23 @@ const Player = (name, token) => {
 //GameBoard - stores board information related to board state, and the ability to add/remove player tokens from the board
 const GameBoard = (() => {
     //Track token pieces
-    myGameBoard = [[]];
-    let currentPlayer, prevPlayer;
+    myGameBoard = [];
+    let currentPlayer =false, prevPlayer=false;
 
     //initalize myGameBoard
     const init = (() => {
-        for(i = 0; i < 3; i++) { 
-            myGameBoard[i][0] = 0;
-            myGameBoard[i][1] = 0;
-            myGameBoard[i][2] = 0;
+        for(i= 0; i < 9; i++) {
+            myGameBoard[i] = 0;
         }
-    });
+    })();
 
     //Add Players to GameBoard
     const addPlayer = (player) => {
-        if(!currentPlayer && !prevPlayer) {
-            currentPlayer = player;
-        }
-        if(currentPlayer && !prevPlayer) {
+        if(currentPlayer) {
             prevPlayer = player;
+        }
+        else {
+            currentPlayer = player;
         }
     };
 
@@ -53,8 +51,8 @@ const GameBoard = (() => {
     const checkForWinner = () => {
         //check horizontal and vertical
         for(i = 0; i < 3; i++) {
-            if(myGameBoard[i][0] && myGameBoard[i][1] && myGameBoard[i][2]) { return true;}
-            else if(myGameBoard[0][i] && myGameBoard[1][i] && myGameBoard[2][i]) { return true;}
+            if(myGameBoard[i] && myGameBoard[i+3] && myGameBoard[i+6]) { return true;}
+            else if(myGameBoard[0] && myGameBoard[i+1] && myGameBoard[i+2]) { return true;}
         }
 
         //check the diagonal
@@ -77,6 +75,7 @@ const GameBoard = (() => {
         let temp = currentPlayer;
         currentPlayer = prevPlayer;
         prevPlayer = temp;
+        console.log(currentPlayer.getName(), prevPlayer.getName())
     }
     //return addPlayerToken function
     return { addPlayer,addPlayerToken, getCurrentPlayer };
@@ -85,7 +84,25 @@ const GameBoard = (() => {
 //Displays and Updates the front end UI as the user interacts with ir
 const displayController = (() => {
     //Get the container holding the 3x3 grid
+    let gridItems = document.querySelectorAll('.grid-item');
+
+    const player1 =Player("Player 1", "X");
+    const player2 =Player("Player 2", "O");
+    GameBoard.addPlayer(player1);
+    GameBoard.addPlayer(player2);
+
     //Iterate through the container to touch each griditem
     //Add an event listerner to each grid item to pass it's index location to GameBoard on click
+    gridItems = Array.from(gridItems);
+    gridItems.forEach(element => {
+        element.addEventListener('click', e => {
+            const span = document.createElement('span');
+            span.className = "token";
+            span.innerText = GameBoard.getCurrentPlayer().getToken();
+            if(!GameBoard.addPlayerToken(parseInt(e.target.id[0]), parseInt(e.target.id[1]))) {
+                element.append(span);
+            }
+        });
+    });
         //if there is a winner call Player.addwin and clear the board
 })();
