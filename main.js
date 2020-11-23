@@ -84,7 +84,6 @@ const GameBoard = (() => {
 
 //Displays and Updates the front end UI as the user interacts with ir
 const displayController = (() => {
-    //
     //Get the container holding the 3x3 grid
     //Iterate through the container to touch each griditem
     //Add an event listerner to each grid item to pass it's index location to GameBoard on click
