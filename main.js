@@ -20,7 +20,7 @@ const GameBoard = (() => {
         [0, 1, 2],
         [3, 4, 5], 
         [6, 7, 8],
-        [0, 3, 5],
+        [0, 3, 6],
         [1, 4, 7], 
         [2, 5, 8], 
         [0, 4, 8],
@@ -52,7 +52,7 @@ const GameBoard = (() => {
         //iterate over win conditions
         return winConditons.some(row => {
             //check in each row if there is some tokens on the board that match that win condition
-            row.every(index => myGameBoard[index] == token);
+            return row.every(index => myGameBoard[index] == token);
         });
         //return the corresponding value
 
@@ -76,7 +76,7 @@ const GameController = (() => {
 
     const addPlayer = (player) => {
         if(isPlayer1) { player1 = player; alternatePlayer();}
-        else { player2 = player; alternatePlayer();};
+        else { player2 = player; alternatePlayer();}
     };
 
     let currentPlayer = () => {
@@ -107,9 +107,10 @@ const displayController = (() => {
             span.innerText = GameController.currentPlayer().getToken();
             if(GameBoard.addPlayerToken(parseInt(e.target.id), GameController.currentPlayer().getToken())) {
                 element.append(span);
-                /* if(GameBoard.checkForWinner(GameController.currentPlayer.getToken())) {
-                    alert(`${GameController.currentPlayer.getName} is the Winner`);
-                } */
+                if(GameBoard.checkForWinner(GameController.currentPlayer().getToken())) {
+                    alert(`${GameController.currentPlayer().getName()} is the Winner`);
+                    console.log(`${GameController.currentPlayer().getName()} is the Winner`);
+                }
                 console.log(GameBoard.checkForTie());
                 GameController.alternatePlayer();
             }
