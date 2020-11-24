@@ -1,0 +1,56 @@
+@font-face {
+    font-family: gameText;
+    src: url(ARCADE.TTF);
+}
+
+body {
+    background-color: hsl(44, 44%, 91%);
+
+}
+.container {
+    width: auto;
+    height: auto;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.player-text {
+    font-family: gameText;
+    font-size: 50px;
+}
+
+.player-current {
+    transform: scale(1.5);
+    color: hsl(277, 54%, 62%);
+    text-decoration: underline;
+    text-decoration-color: hsl(277, 54%, 62%);
+}
+
+.grid-container {
+    display: grid;
+    width: 20vw;
+    height: 40vh;
+    grid-template-columns: repeat(3,1fr);
+    grid-template-rows: repeat(3,1fr);
+    margin-top: 10%;
+    outline: 1px solid hsl(44, 44%, 91%);
+    outline-offset: -1px;
+    
+}
+
+.grid-item {
+    display: flex;
+    background-color: hsl(44, 44%, 91%);
+    border: 1px solid hsl(228, 90%, 86%);
+    font-family: gameText;
+    text-align: center;
+    font-size: 5rem;
+}
+
+div.grid-item:hover {
+    background-color: hsl(0, 0%, 90%);
+}
+
+.token {
+    margin: auto;
+}
