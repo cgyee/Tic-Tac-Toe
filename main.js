@@ -99,22 +99,31 @@ const displayController = (() => {
 
     //Iterate through the container to touch each griditem
     //Add an event listerner to each grid item to pass it's index location to GameBoard on click
-    gridItems = Array.from(gridItems);
-    gridItems.forEach(element => {
-        element.addEventListener('click', e => {
-            const span = document.createElement('span');
-            span.className = "token";
-            span.innerText = GameController.currentPlayer().getToken();
-            if(GameBoard.addPlayerToken(parseInt(e.target.id), GameController.currentPlayer().getToken())) {
-                element.append(span);
-                if(GameBoard.checkForWinner(GameController.currentPlayer().getToken())) {
-                    alert(`${GameController.currentPlayer().getName()} is the Winner`);
-                    console.log(`${GameController.currentPlayer().getName()} is the Winner`);
-                }
-                console.log(GameBoard.checkForTie());
-                GameController.alternatePlayer();
-            }
-        });
+    const startNewGame = () => {
+        gridItems = Array.from(gridItems);
+        gridItems.forEach(element => {
+            element.addEventListener('click', addTokenToScreen)
     });
-        //if there is a winner call Player.addwin and clear the board
+    
+    const clearGame = () => {
+        Array.from(gridItems).forEach(element => {
+            element.removeChild(element.firstChild);
+        });
+    };
+
+    const addTokenToScreen = (e) => {
+        const span = document.createElement('span');
+        span.className = "token";
+        span.innerText = GameController.currentPlayer().getToken();
+        if(GameBoard.addPlayerToken(parseInt(e.target.id), GameController.currentPlayer().getToken())) {
+            element.append(span);
+            if(GameBoard.checkForWinner(GameController.currentPlayer().getToken())) {
+                alert(`${GameController.currentPlayer().getName()} is the Winner`);
+                GameController.currentPlayer().addWin();
+                GameBoard.resetBoard();
+            }
+            console.log(GameBoard.checkForTie());
+            GameController.alternatePlayer();
+        }
+    });
 })();
