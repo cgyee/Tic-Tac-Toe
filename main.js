@@ -33,6 +33,10 @@ const GameBoard = (() => {
         }
     })();
 
+    const resetBoard = () => {
+        init();
+    };
+
     //Function to Add token/Player to myGameBoard
     const addPlayerToken = (index, token) => {
         //Check if Player selection in myGameBoard is available at the specified index 
@@ -53,10 +57,15 @@ const GameBoard = (() => {
         //return the corresponding value
 
     };
+
+    const checkForTie = () => {
+        return myGameBoard.every(token => token == 'X' || token == 'O');
+    }
     //return addPlayerToken function
-    return {addPlayerToken, checkForWinner };
+    return {addPlayerToken, checkForWinner, resetBoard, checkForTie };
 })();
 
+//Controls the player flow of the game
 const GameController = (() => {
     let player1, player2;
     let isPlayer1 = true;
@@ -98,8 +107,10 @@ const displayController = (() => {
             span.innerText = GameController.currentPlayer().getToken();
             if(GameBoard.addPlayerToken(parseInt(e.target.id), GameController.currentPlayer().getToken())) {
                 element.append(span);
-                //GameBoard.checkForWinner
-                e.disabled = true;
+                /* if(GameBoard.checkForWinner(GameController.currentPlayer.getToken())) {
+                    alert(`${GameController.currentPlayer.getName} is the Winner`);
+                } */
+                console.log(GameBoard.checkForTie());
                 GameController.alternatePlayer();
             }
         });
