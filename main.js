@@ -103,7 +103,8 @@ const displayController = (() => {
         gridItems = Array.from(gridItems);
         gridItems.forEach(element => {
             element.addEventListener('click', addTokenToScreen)
-    });
+        });
+    };
     
     const clearGame = () => {
         Array.from(gridItems).forEach(element => {
@@ -125,5 +126,5 @@ const displayController = (() => {
             console.log(GameBoard.checkForTie());
             GameController.alternatePlayer();
         }
-    });
+    }
 })();
