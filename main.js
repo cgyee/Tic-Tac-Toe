@@ -93,7 +93,7 @@ const GameController = (() => {
 //Displays and Updates the front end UI as the user interacts with ir
 const displayController = (() => {
     //Get the container holding the 3x3 grid
-    let gridItems = document.querySelectorAll('.grid-item');
+    //let gridItems = document.querySelectorAll('.grid-item');
 
     const player1 =Player("Player 1", "X");
     const player2 =Player("Player 2", "O");
@@ -103,8 +103,9 @@ const displayController = (() => {
     //Iterate through the container to touch each griditem
     //Add an event listerner to each grid item to pass it's index location to GameBoard on click
     const startNewGame = () => {
-       
+        gameDisplay();
         GameBoard.resetGameBoard();
+        let gridItems = document.querySelectorAll('.grid-item');
         gridItems = Array.from(gridItems);
         gridItems.forEach(element => {
             element.addEventListener('click', addTokenToScreen);
@@ -169,12 +170,12 @@ const displayController = (() => {
     const alternatePlayerDisplay = (player) => {
 
         const currentPlayer = isPlayerOne(player) ?
-            document.querySelector('#Player-1-score') : 
-            document.querySelector('#Player-2-score');
+            document.querySelector('#Player-1') : 
+            document.querySelector('#Player-2');
         
         const prevPlayer = !isPlayerOne(player) ?
-            document.querySelector('#Player-2-score') : 
-            document.querySelector('#Player-1-score');
+            document.querySelector('#Player-1') : 
+            document.querySelector('#Player-2');
 
         currentPlayer.className = "player-text player-current";
         prevPlayer.className = "player-text";
@@ -188,6 +189,44 @@ const displayController = (() => {
         
             scoreBoard.innerText ="Score: " + player.getWins();
     };
+
+    const gameDisplay = () => {
+
+        const container = document.querySelector('.container');
+        const gameContainer = document.createElement('div');
+        const gridContainer = document.createElement('div');
+        
+        const playerContainerMaker = (player, id, isCurrent) => {
+            const playerContainer = document.createElement('div');
+            const playerName = document.createElement('p');
+            const playerScore = document.createElement('p');
+            playerContainer.className = "player-container";
+            playerName.className = `player-text ${isCurrent}`;
+            playerName.id = `Player-${id}`;
+            playerScore.className = "player-score";
+            playerScore.id = `Player-${id}-score`;
+            playerName.innerText = player;
+            playerScore.innerText = "Score: 0";
+            playerContainer.append(playerName, playerScore);
+            return playerContainer
+
+        }
+        
+        const playerOneContainer = playerContainerMaker("Player 1", 1, "player-current");
+        const playerTwoContainer = playerContainerMaker("Player 2", 2, "");
+
+        gameContainer.className = "game-container";
+        gridContainer.className = "grid-container";
+        for(i = 0; i < 9; i++) { 
+            const gridItem = document.createElement('div');
+            gridItem.className = "grid-item";
+            gridItem.id = i;
+            gridContainer.append(gridItem);
+        }
+        gameContainer.append(gridContainer);
+        container.append(playerOneContainer, gameContainer, playerTwoContainer);
+
+    }
 
     startNewGame();
 })();
