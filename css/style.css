@@ -14,9 +14,16 @@ body {
     justify-content: space-evenly;
 }
 
+.player-container {
+    display: flex;
+    flex-direction: column;
+}
+
 .player-text {
     font-family: gameText;
     font-size: 50px;
+    margin-block-start: 2em;
+    scroll-margin-block-end: 2em; 
 }
 
 .player-current {
@@ -24,6 +31,17 @@ body {
     color: hsl(277, 54%, 62%);
     text-decoration: underline;
     text-decoration-color: hsl(277, 54%, 62%);
+}
+
+.player-score {
+    text-align: center;
+    font-family: gameText;
+    font-size: 40px;
+}
+
+.game-container {
+    display: flex;
+    flex-direction: column;
 }
 
 .grid-container {
@@ -49,6 +67,17 @@ body {
 
 div.grid-item:hover {
     background-color: hsl(0, 0%, 90%);
+}
+
+.reset-button {
+    margin-top: 50%;
+    font-family: 'gameText';
+    font-size: 50px;
+    text-align: center;
+    border: 3px dotted red;
+    padding: 20px;
+    color: red;
+    border-radius: 1%;
 }
 
 .token {

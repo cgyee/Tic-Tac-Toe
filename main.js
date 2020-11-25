@@ -1,6 +1,7 @@
 //Player - contains values for player related object i.e name, tile
 
 const Player = (name, token) => {
+    
     const myName = name;
     const myToken = token;
     let myWins = 0;
@@ -20,20 +21,21 @@ const GameBoard = (() => {
         [0, 1, 2],
         [3, 4, 5], 
         [6, 7, 8],
-        [0, 3, 5],
+        [0, 3, 6],
         [1, 4, 7], 
         [2, 5, 8], 
         [0, 4, 8],
         [6, 4, 2]
     ];
     //initalize myGameBoard
-    const init = (() => {
+    const init = () => {
+        
         for(i= 0; i < 9; i++) {
             myGameBoard[i] = 0;
         }
-    })();
+    };
 
-    const resetBoard = () => {
+    const resetGameBoard = () => {
         init();
     };
 
@@ -52,7 +54,7 @@ const GameBoard = (() => {
         //iterate over win conditions
         return winConditons.some(row => {
             //check in each row if there is some tokens on the board that match that win condition
-            row.every(index => myGameBoard[index] == token);
+            return row.every(index => myGameBoard[index] == token);
         });
         //return the corresponding value
 
@@ -62,11 +64,12 @@ const GameBoard = (() => {
         return myGameBoard.every(token => token == 'X' || token == 'O');
     }
     //return addPlayerToken function
-    return {addPlayerToken, checkForWinner, resetBoard, checkForTie };
+    return {addPlayerToken, checkForWinner, resetGameBoard, checkForTie };
 })();
 
 //Controls the player flow of the game
 const GameController = (() => {
+    
     let player1, player2;
     let isPlayer1 = true;
 
@@ -76,7 +79,7 @@ const GameController = (() => {
 
     const addPlayer = (player) => {
         if(isPlayer1) { player1 = player; alternatePlayer();}
-        else { player2 = player; alternatePlayer();};
+        else { player2 = player; alternatePlayer();}
     };
 
     let currentPlayer = () => {
@@ -99,21 +102,92 @@ const displayController = (() => {
 
     //Iterate through the container to touch each griditem
     //Add an event listerner to each grid item to pass it's index location to GameBoard on click
-    gridItems = Array.from(gridItems);
-    gridItems.forEach(element => {
-        element.addEventListener('click', e => {
-            const span = document.createElement('span');
-            span.className = "token";
-            span.innerText = GameController.currentPlayer().getToken();
-            if(GameBoard.addPlayerToken(parseInt(e.target.id), GameController.currentPlayer().getToken())) {
-                element.append(span);
-                /* if(GameBoard.checkForWinner(GameController.currentPlayer.getToken())) {
-                    alert(`${GameController.currentPlayer.getName} is the Winner`);
-                } */
-                console.log(GameBoard.checkForTie());
-                GameController.alternatePlayer();
-            }
+    const startNewGame = () => {
+       
+        GameBoard.resetGameBoard();
+        gridItems = Array.from(gridItems);
+        gridItems.forEach(element => {
+            element.addEventListener('click', addTokenToScreen);
         });
-    });
-        //if there is a winner call Player.addwin and clear the board
+    };
+    
+    const clearGameDisplay = () => {
+        const gridTokens = document.getElementsByClassName("token");
+        while(gridTokens[0]) {
+            gridTokens[0].remove();
+        }
+        
+    };
+
+    resetBoardButton = () => {
+        const gameContainer = document.querySelector('.game-container');
+        const resetButton = document.createElement('button');
+        resetButton.className = 'reset-button';
+        resetButton.innerText = "RESET!!!";
+        resetButton.addEventListener('click', e => {
+            clearGameDisplay()
+            GameBoard.resetGameBoard();
+            const removeButton = document.getElementsByClassName('reset-button')[0].remove();
+        });
+        gameContainer.append(resetButton);
+
+    };
+
+    const addTokenToScreen = (e) => {
+        
+        const span = document.createElement('span');
+        span.className = "token";
+        span.innerText = GameController.currentPlayer().getToken();
+
+        if(GameBoard.addPlayerToken(parseInt(e.target.id), GameController.currentPlayer().getToken())) {
+            e.target.append(span);
+
+            if(GameBoard.checkForWinner(GameController.currentPlayer().getToken())) {
+                
+                GameController.currentPlayer().addWin();
+                updateScoreDisplay(GameController.currentPlayer());
+                //GameBoard.resetGameBoard();
+                resetBoardButton();
+            }
+            else if(GameBoard.checkForTie()) {
+                
+                //GameBoard.resetGameBoard();
+                alert("You tied");
+                //clearGameDisplay();
+                resetBoardButton();
+            }
+
+            alternatePlayerDisplay(GameController.currentPlayer());
+            GameController.alternatePlayer();
+        }
+    };
+
+    const isPlayerOne = (player) => {
+        return player1 === player ? true : false;
+    };
+
+    const alternatePlayerDisplay = (player) => {
+
+        const currentPlayer = isPlayerOne(player) ?
+            document.querySelector('#Player-1-score') : 
+            document.querySelector('#Player-2-score');
+        
+        const prevPlayer = !isPlayerOne(player) ?
+            document.querySelector('#Player-2-score') : 
+            document.querySelector('#Player-1-score');
+
+        currentPlayer.className = "player-text player-current";
+        prevPlayer.className = "player-text";
+    };
+
+    const updateScoreDisplay = (player) => {
+        
+        const scoreBoard = isPlayerOne(player) ? 
+            document.querySelector('#Player-1-score') : 
+            document.querySelector('#Player-2-score');
+        
+            scoreBoard.innerText ="Score: " + player.getWins();
+    };
+
+    startNewGame();
 })();
