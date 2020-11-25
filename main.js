@@ -1,6 +1,7 @@
 //Player - contains values for player related object i.e name, tile
 
 const Player = (name, token) => {
+    
     const myName = name;
     const myToken = token;
     let myWins = 0;
@@ -28,6 +29,7 @@ const GameBoard = (() => {
     ];
     //initalize myGameBoard
     const init = (() => {
+        
         for(i= 0; i < 9; i++) {
             myGameBoard[i] = 0;
         }
@@ -67,6 +69,7 @@ const GameBoard = (() => {
 
 //Controls the player flow of the game
 const GameController = (() => {
+    
     let player1, player2;
     let isPlayer1 = true;
 
@@ -100,31 +103,67 @@ const displayController = (() => {
     //Iterate through the container to touch each griditem
     //Add an event listerner to each grid item to pass it's index location to GameBoard on click
     const startNewGame = () => {
+       
         gridItems = Array.from(gridItems);
         gridItems.forEach(element => {
-            element.addEventListener('click', addTokenToScreen)
+            element.addEventListener('click', addTokenToScreen);
         });
     };
     
     const clearGame = () => {
+        
         Array.from(gridItems).forEach(element => {
             element.removeChild(element.firstChild);
         });
     };
 
     const addTokenToScreen = (e) => {
+        
         const span = document.createElement('span');
         span.className = "token";
         span.innerText = GameController.currentPlayer().getToken();
+
         if(GameBoard.addPlayerToken(parseInt(e.target.id), GameController.currentPlayer().getToken())) {
-            element.append(span);
+            e.target.append(span);
+
             if(GameBoard.checkForWinner(GameController.currentPlayer().getToken())) {
-                alert(`${GameController.currentPlayer().getName()} is the Winner`);
                 GameController.currentPlayer().addWin();
+                updateScoreDisplay(GameController.currentPlayer());
                 GameBoard.resetBoard();
             }
+
             console.log(GameBoard.checkForTie());
+            alternatePlayerDisplay(GameController.currentPlayer());
             GameController.alternatePlayer();
         }
-    }
+    };
+    const alternatePlayerDisplay = (player) => {
+        
+        if(player1 === player) {
+            const currentPlayer = document.querySelector('#Player-2');
+            const prevPlayer = document.querySelector('#Player-1');
+            currentPlayer.className = "player-text player-current";
+            prevPlayer.className = "player-text";
+        }
+
+        else {
+            const currentPlayer = document.querySelector('#Player-1');
+            const prevPlayer = document.querySelector('#Player-2');
+            currentPlayer.className = "player-text player-current";
+            prevPlayer.className = "player-text";
+        }
+    };
+
+    const updateScoreDisplay = (player) => {
+        if(player1 === player) {
+            const scoreBoard = document.querySelector('#Player-1-score');
+            scoreBoard.innerText = player.getWins();
+        }
+        else {
+            const scoreBoard = document.querySelector('#Player-2-score');
+            scoreBoard.innerText = player.getWins();
+        }
+    };
+
+    startNewGame();
 })();
