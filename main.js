@@ -28,12 +28,12 @@ const GameBoard = (() => {
         [6, 4, 2]
     ];
     //initalize myGameBoard
-    const init = (() => {
+    const init = () => {
         
         for(i= 0; i < 9; i++) {
             myGameBoard[i] = 0;
         }
-    })();
+    };
 
     const resetBoard = () => {
         init();
@@ -104,6 +104,7 @@ const displayController = (() => {
     //Add an event listerner to each grid item to pass it's index location to GameBoard on click
     const startNewGame = () => {
        
+        GameBoard.resetBoard();
         gridItems = Array.from(gridItems);
         gridItems.forEach(element => {
             element.addEventListener('click', addTokenToScreen);
@@ -111,7 +112,7 @@ const displayController = (() => {
     };
     
     const clearGame = () => {
-        
+
         Array.from(gridItems).forEach(element => {
             element.removeChild(element.firstChild);
         });
@@ -127,42 +128,54 @@ const displayController = (() => {
             e.target.append(span);
 
             if(GameBoard.checkForWinner(GameController.currentPlayer().getToken())) {
+                
                 GameController.currentPlayer().addWin();
                 updateScoreDisplay(GameController.currentPlayer());
                 GameBoard.resetBoard();
             }
+            else if(GameBoard.checkForTie()) {
+                
+                GameBoard.resetBoard();
+                alert("You tied");
+                clearGame();
+            }
 
-            console.log(GameBoard.checkForTie());
             alternatePlayerDisplay(GameController.currentPlayer());
             GameController.alternatePlayer();
         }
     };
-    const alternatePlayerDisplay = (player) => {
-        
-        if(player1 === player) {
-            const currentPlayer = document.querySelector('#Player-2');
-            const prevPlayer = document.querySelector('#Player-1');
-            currentPlayer.className = "player-text player-current";
-            prevPlayer.className = "player-text";
-        }
 
-        else {
-            const currentPlayer = document.querySelector('#Player-1');
-            const prevPlayer = document.querySelector('#Player-2');
-            currentPlayer.className = "player-text player-current";
-            prevPlayer.className = "player-text";
-        }
+    const isPlayerOne = (player) => {
+        return player1 === player ? true : false;
+    }
+    const alternatePlayerDisplay = (player) => {
+
+        const currentPlayer = isPlayerOne(player) ?
+            document.querySelector('#Player-1-score') : 
+            document.querySelector('#Player-2-score');
+        
+        const prevPlayer = !isPlayerOne(player) ?
+            document.querySelector('#Player-2-score') : 
+            document.querySelector('#Player-1-score');
+
+        currentPlayer.className = "player-text player-current";
+        prevPlayer.className = "player-text";
     };
 
+    resetBoard = () => {
+        const gameContainer = document.querySelector('.game-container');
+        const restButton = document.createElement('button');
+        restButton.className = 'reset-button';
+
+    }
+
     const updateScoreDisplay = (player) => {
-        if(player1 === player) {
-            const scoreBoard = document.querySelector('#Player-1-score');
+        
+        const scoreBoard = isPlayerOne(player) ? 
+            document.querySelector('#Player-1-score') : 
+            document.querySelector('#Player-2-score');
+        
             scoreBoard.innerText = player.getWins();
-        }
-        else {
-            const scoreBoard = document.querySelector('#Player-2-score');
-            scoreBoard.innerText = player.getWins();
-        }
     };
 
     startNewGame();
