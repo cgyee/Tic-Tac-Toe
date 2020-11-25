@@ -35,7 +35,7 @@ const GameBoard = (() => {
         }
     };
 
-    const resetBoard = () => {
+    const resetGameBoard = () => {
         init();
     };
 
@@ -64,7 +64,7 @@ const GameBoard = (() => {
         return myGameBoard.every(token => token == 'X' || token == 'O');
     }
     //return addPlayerToken function
-    return {addPlayerToken, checkForWinner, resetBoard, checkForTie };
+    return {addPlayerToken, checkForWinner, resetGameBoard, checkForTie };
 })();
 
 //Controls the player flow of the game
@@ -104,18 +104,33 @@ const displayController = (() => {
     //Add an event listerner to each grid item to pass it's index location to GameBoard on click
     const startNewGame = () => {
        
-        GameBoard.resetBoard();
+        GameBoard.resetGameBoard();
         gridItems = Array.from(gridItems);
         gridItems.forEach(element => {
             element.addEventListener('click', addTokenToScreen);
         });
     };
     
-    const clearGame = () => {
+    const clearGameDisplay = () => {
+        const gridTokens = document.getElementsByClassName("token");
+        while(gridTokens[0]) {
+            gridTokens[0].remove();
+        }
+        
+    };
 
-        Array.from(gridItems).forEach(element => {
-            element.removeChild(element.firstChild);
+    resetBoardButton = () => {
+        const gameContainer = document.querySelector('.game-container');
+        const resetButton = document.createElement('button');
+        resetButton.className = 'reset-button';
+        resetButton.innerText = "RESET!!!";
+        resetButton.addEventListener('click', e => {
+            clearGameDisplay()
+            GameBoard.resetGameBoard();
+            const removeButton = document.getElementsByClassName('reset-button')[0].remove();
         });
+        gameContainer.append(resetButton);
+
     };
 
     const addTokenToScreen = (e) => {
@@ -131,13 +146,15 @@ const displayController = (() => {
                 
                 GameController.currentPlayer().addWin();
                 updateScoreDisplay(GameController.currentPlayer());
-                GameBoard.resetBoard();
+                //GameBoard.resetGameBoard();
+                resetBoardButton();
             }
             else if(GameBoard.checkForTie()) {
                 
-                GameBoard.resetBoard();
+                //GameBoard.resetGameBoard();
                 alert("You tied");
-                clearGame();
+                //clearGameDisplay();
+                resetBoardButton();
             }
 
             alternatePlayerDisplay(GameController.currentPlayer());
@@ -147,7 +164,8 @@ const displayController = (() => {
 
     const isPlayerOne = (player) => {
         return player1 === player ? true : false;
-    }
+    };
+
     const alternatePlayerDisplay = (player) => {
 
         const currentPlayer = isPlayerOne(player) ?
@@ -162,20 +180,13 @@ const displayController = (() => {
         prevPlayer.className = "player-text";
     };
 
-    resetBoard = () => {
-        const gameContainer = document.querySelector('.game-container');
-        const restButton = document.createElement('button');
-        restButton.className = 'reset-button';
-
-    }
-
     const updateScoreDisplay = (player) => {
         
         const scoreBoard = isPlayerOne(player) ? 
             document.querySelector('#Player-1-score') : 
             document.querySelector('#Player-2-score');
         
-            scoreBoard.innerText = player.getWins();
+            scoreBoard.innerText ="Score: " + player.getWins();
     };
 
     startNewGame();
