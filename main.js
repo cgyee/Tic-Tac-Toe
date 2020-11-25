@@ -228,5 +228,16 @@ const displayController = (() => {
 
     }
 
-    startNewGame();
+    const goToGameDisplay = () => {
+        const playerInput = document.querySelectorAll('player-text input-text');
+        Array.from(playerInput).forEach(element => {
+            element.addEventListener('keypress', e => {
+                const button = document.querySelector('start-button');
+                button.disabled = !e.target.value ? true : false;
+                console.log(e.target.value);
+            })
+        })
+    }
+    //startNewGame();
+    goToGameDisplay();
 })();

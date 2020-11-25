@@ -26,6 +26,17 @@ body {
     scroll-margin-block-end: 2em; 
 }
 
+.input-text {
+    width: 25vw;
+    height: 10vh;;
+    text-align: center;
+    border-radius: 2px;
+    border: 5px solid rgb(39, 121, 230);
+    font-size: 70px;
+    color: rgb(39, 121, 230);
+    background-color: hsl(44, 44%, 91%);
+}
+
 .player-current {
     transform: scale(1.5);
     color: hsl(277, 54%, 62%);
@@ -69,8 +80,8 @@ div.grid-item:hover {
     background-color: hsl(0, 0%, 90%);
 }
 
-.reset-button {
-    margin-top: 50%;
+button {
+    margin-top: 20%;
     font-family: 'gameText';
     font-size: 50px;
     text-align: center;
@@ -78,6 +89,9 @@ div.grid-item:hover {
     padding: 20px;
     color: red;
     border-radius: 1%;
+}
+reset-button {
+    margin-top: 50%;
 }
 
 .token {
