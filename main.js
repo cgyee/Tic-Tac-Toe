@@ -95,10 +95,12 @@ const displayController = (() => {
     //Get the container holding the 3x3 grid
     //let gridItems = document.querySelectorAll('.grid-item');
 
-    const player1 =Player("Player 1", "X");
+    /* const player1 =Player("Player 1", "X");
     const player2 =Player("Player 2", "O");
     GameController.addPlayer(player1);
-    GameController.addPlayer(player2);
+    GameController.addPlayer(player2); */
+
+    let player1;
 
     //Iterate through the container to touch each griditem
     //Add an event listerner to each grid item to pass it's index location to GameBoard on click
@@ -212,8 +214,14 @@ const displayController = (() => {
 
         }
         
-        const playerOneContainer = playerContainerMaker("Player 1", 1, "player-current");
-        const playerTwoContainer = playerContainerMaker("Player 2", 2, "");
+        /* const playerOneContainer = playerContainerMaker("Player 1", 1, "player-current");
+        const playerTwoContainer = playerContainerMaker("Player 2", 2, ""); */
+
+        const playerOneContainer = playerContainerMaker(GameController.currentPlayer().getName(), 1, "player-current");
+        GameController.alternatePlayer();
+        const playerTwoContainer = playerContainerMaker(GameController.currentPlayer().getName(), 2, "");
+        GameController.alternatePlayer();
+
 
         gameContainer.className = "game-container";
         gridContainer.className = "grid-container";
@@ -228,16 +236,40 @@ const displayController = (() => {
 
     }
 
-    const goToGameDisplay = () => {
-        const playerInput = document.querySelectorAll('player-text input-text');
+    const checkInputAndStartGame = () => {
+        const playerInput = document.querySelectorAll('.input-text');
+        const button = document.querySelector('.start-button');
+
+        button.addEventListener('click', startNewGameDisplay);
+
         Array.from(playerInput).forEach(element => {
             element.addEventListener('keypress', e => {
-                const button = document.querySelector('start-button');
-                button.disabled = !e.target.value ? true : false;
-                console.log(e.target.value);
+                const inputPlayer1 = document.querySelector("#Player-1").value;
+                const inputPlayer2 = document.querySelector("#Player-2").value;
+                button.disabled = (inputPlayer1 && inputPlayer2) ? false : true;
+                button.innerText = (inputPlayer1 && inputPlayer2) ? "START!" : "Ready?"
             })
         })
+    };
+
+    const clearStartDisplay = () => {
+        const container = document.querySelector('.container');
+        while(container.firstChild) { container.removeChild(container.firstChild);}
+    }
+
+    const startNewGameDisplay = () => {
+
+        const inputPlayer1 = document.querySelector("#Player-1").value;
+        const inputPlayer2 = document.querySelector("#Player-2").value;
+        let newPlayer1 = Player(inputPlayer1, "X");
+        let newPlayer2 = Player(inputPlayer2, "O");
+        player1 = newPlayer1;
+        GameController.addPlayer(newPlayer1);
+        GameController.addPlayer(newPlayer2);
+
+        clearStartDisplay();
+        startNewGame();
     }
     //startNewGame();
-    goToGameDisplay();
+    checkInputAndStartGame();
 })();
